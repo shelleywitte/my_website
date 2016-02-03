@@ -38,7 +38,7 @@ function cities() {
     //appends a table to the div
     $("#mydiv").append("<table>");
 
-    //appends a header row to the table (in the div)
+    //appends a header row to the table (located in the div)
     $("table").append("<tr>");
 
     //adds "City" and "Population" columns to the header row (in the table)
