@@ -7,6 +7,7 @@ function initialize() {
     cities();
     addColumns();
     addEvents();
+    jQueryAjax();
 
 };
 
@@ -54,7 +55,7 @@ function cities() {
 };
 
 
-//Debugging section
+//Debugging section #1
 
 // defines a function that takes the cityPop global variable as a parameter 
 function addColumns(){
@@ -134,8 +135,43 @@ function addEvents(){
 
 };
 
+//an AJAX function
+function jQueryAjax(){
+    
+    var mydata;
 
+    $.ajax("data/MegaCities.geojson", {
+        dataType: "json", 
+        success: callback
+    });
+
+};
+
+function callback(response) {
+    console.log(response);
+}
 
 //calls initialize function to excute the functions within that function
 $(document).ready(initialize);
 
+// function debugCallback(response){
+    
+//     $(mydiv).append('GeoJSON data: ' + JSON.stringify(mydata));
+// };
+
+// function debugAjax(){
+    
+//     var mydata;
+
+//     $.ajax("data/MegaCities.geojson", {
+//         dataType: "json",
+//         success: function(response){
+            
+//             debugCallback(mydata);
+//         }
+//     });
+
+//     $(mydiv).append('<br>GeoJSON data:<br>' + JSON.stringify(mydata));
+// };
+
+// $(mydiv).append('GeoJSON data: ' + JSON.stringify(mydata));
