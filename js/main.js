@@ -8,6 +8,7 @@ function initialize() {
     addColumns();
     addEvents();
     jQueryAjax();
+    callback(); //improperly accessing my GeoJSON data outside of the callback function
 
 };
 
@@ -137,41 +138,43 @@ function addEvents(){
 
 //an AJAX function
 function jQueryAjax(){
+    //jQuery AJAX method that takes a URL string parameter that points to the data within
+    //the data folder and a settings object with one property that sets the data type and
+    //a success property. The method below is commented out because there is a shorthand 
+    //method that does the same task.
+
+    // $.ajax("data/MegaCities.geojson", {
+        // dataType: "json", 
+        // success: callback
+
+    //success property will send the callback function 3 parameters but only the first one,
+    //the response data, is truly necessary since it is our data
     
-    var mydata;
-
-    $.ajax("data/MegaCities.geojson", {
-        dataType: "json", 
-        success: callback
-    });
-
+    //shorthand method that loads GeoJSON data into the DOM
+    $.getJSON("data/MegaCities.geojson", callback);
 };
 
-function callback(response) {
-    console.log(response);
-}
+
+//creates a callback function so that the data can load while non-data related script
+//can run in the meantime but tasks that use the data will execute once the data arrives
+function callback(response) { 
+    //
+    var mydata = response;
+    //
+    stringifyData(mydata);
+};
+
+function stringifyData(data){
+    // $("#mydiv").append('GeoJSON data: ' + JSON.stringify(data));
+    function replacer(key, value){
+        if(key=="name"||key=="desc"||key=="color"||key=="source"||key=="precision"){
+            return undefined;
+        }
+        else return value;
+    }
+    $("#mydiv").append('GeoJSON data:' + JSON.stringify(data,replacer,"\n"));
+};
+
 
 //calls initialize function to excute the functions within that function
 $(document).ready(initialize);
-
-// function debugCallback(response){
-    
-//     $(mydiv).append('GeoJSON data: ' + JSON.stringify(mydata));
-// };
-
-// function debugAjax(){
-    
-//     var mydata;
-
-//     $.ajax("data/MegaCities.geojson", {
-//         dataType: "json",
-//         success: function(response){
-            
-//             debugCallback(mydata);
-//         }
-//     });
-
-//     $(mydiv).append('<br>GeoJSON data:<br>' + JSON.stringify(mydata));
-// };
-
-// $(mydiv).append('GeoJSON data: ' + JSON.stringify(mydata));
