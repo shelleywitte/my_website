@@ -8,7 +8,6 @@ function initialize() {
     addColumns();
     addEvents();
     jQueryAjax();
-    callback(); //improperly accessing my GeoJSON data outside of the callback function
 
 };
 
@@ -154,27 +153,26 @@ function jQueryAjax(){
     $.getJSON("data/MegaCities.geojson", callback);
 };
 
-
+console.log(callback())
 //creates a callback function so that the data can load while non-data related script
 //can run in the meantime but tasks that use the data will execute once the data arrives
 function callback(response) { 
     //
-    var mydata = response;
-    //
-    stringifyData(mydata);
-};
-
-function stringifyData(data){
-    // $("#mydiv").append('GeoJSON data: ' + JSON.stringify(data));
     function replacer(key, value){
-        if(key=="name"||key=="desc"||key=="color"||key=="source"||key=="precision"){
+        if(key=="name"||key=="desc"||key=="color"||key=="source"||key=="precision"||
+            key=="type"){
             return undefined;
         }
         else return value;
     }
-    $("#mydiv").append('GeoJSON data:' + JSON.stringify(data,replacer,"\n"));
+    //
+    var json = JSON.stringify(response,replacer,2)
+    $("#mydiv").append("<br>GeoJSON data:<br>" + json);
+    
+    console.log(json)
+
 };
 
 
-//calls initialize function to excute the functions within that function
-$(document).ready(initialize);
+// //calls initialize function to excute the functions within that function
+$(document).ready(initialize)  
