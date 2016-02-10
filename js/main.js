@@ -7,7 +7,7 @@ function initialize() {
     cities();
     addColumns();
     addEvents();
-    jQueryAjax();
+    debugAjax();
 
 };
 
@@ -136,43 +136,57 @@ function addEvents(){
 };
 
 //an AJAX function
-function jQueryAjax(){
+function debugAjax(){
     //jQuery AJAX method that takes a URL string parameter that points to the data within
     //the data folder and a settings object with one property that sets the data type and
     //a success property. The method below is commented out because there is a shorthand 
     //method that does the same task.
 
     // $.ajax("data/MegaCities.geojson", {
-        // dataType: "json", 
-        // success: callback
+    //     dataType: "json", 
+    //     success: callback
 
     //success property will send the callback function 3 parameters but only the first one,
     //the response data, is truly necessary since it is our data
     
     //shorthand method that loads GeoJSON data into the DOM
     $.getJSON("data/MegaCities.geojson", callback);
+    
+    //improperly accessing my data outside of the callback function 
+    //returns "undefined"
+    console.log(callback())
 };
 
-console.log(callback())
+
 //creates a callback function so that the data can load while non-data related script
 //can run in the meantime but tasks that use the data will execute once the data arrives
 function callback(response) { 
-    //
+    
+    //creates a replacer function with two arguments to be used as a parameter for the 
+    //JSON.stringify method below
     function replacer(key, value){
+        //looks at the object fields (key) in the GeoJSON data 
+        //if the string values listed are found, they are not displayed
+        //all other fields with their values are allowed to be displayed
         if(key=="name"||key=="desc"||key=="color"||key=="source"||key=="precision"||
             key=="type"){
-            return undefined;
+            return undefined; //the above keys and their values are not displayed
         }
-        else return value;
+        // keys that aren't listed above are allowed to be displayed with their values
+        else return value; 
     }
-    //
-    var json = JSON.stringify(response,replacer,2)
-    $("#mydiv").append("<br>GeoJSON data:<br>" + json);
     
-    console.log(json)
+    //using the JSON.stringify method with 3 parameters
+    //first parameter is the the data that is being converted to a string
+    //second parameter is optional and alters the behavior of the stringification process
+    //third parameter is also option and only works if you are printing to the console
+    //want it to display the output for readability
+    var json = JSON.stringify(response,replacer,2)
+ 
+    //adding the GeoJSON data to the div the string is just for display purposes to label
+    //the data. The json variable contains the JSON.stringify method  
+    $("#mydiv").append("<br>GeoJSON data:<br>" + json);
 
-};
-
-
+}
 // //calls initialize function to excute the functions within that function
 $(document).ready(initialize)  
